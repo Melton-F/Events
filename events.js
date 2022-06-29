@@ -15,4 +15,4 @@ myEmitter.on("new sale", ()=>{
 myEmitter.on("new sale", ()=>{
     console.log('sales starts soon ');
 })
-myEmitter.emit("melton")
+myEmitter.emit("francis")
