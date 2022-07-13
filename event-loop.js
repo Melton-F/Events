@@ -1,33 +1,39 @@
-const fs = require('fs')
-const http = require('http')
-const crypto = require('crypto')
-const start = Date.now()
-process.env.UV_THREADPOOL_SIZE = 7;
+fs = require('fs')
+crypto = require('crypto')
+const start = Date.now();
 
-setTimeout(()=> console.log('Timer 1 finished'), 0)
-setImmediate(()=> console.log('Immediate 1 finished'))
 
-fs.readFile('/starter/event-loop.js', ()=>{
-    console.log("I/O finished");
-    console.log("_______");
-    setTimeout(()=> console.log('Timer 2 finished'), 0)
-    setTimeout(()=> console.log('Timer 3 finished'), 1000)
-    setImmediate(()=> console.log('Immediate 2 finished'))
+setTimeout(()=> console.log("timer 1"), 0)
 
-    process.nextTick(()=> console.log('Its nextTick 1'))
+setImmediate(()=> console.log("immediate timer 1"))
+
+fs.readFile('./test-file.txt', ()=>{
+    console.log('I/O readed');
+    setTimeout(() => {
+        console.log("Timeout inside the function"), 0
+    });
+    setTimeout(()=> console.log('Timeout inside the function 2'),100)
+
+    setImmediate(()=> console.log("Set Immediate inside function"))
+
+    process.nextTick(()=>{
+        console.log("its nexttick");
+    })
 
     crypto.pbkdf2Sync('password', 'salt', 100000, 1024, 'sha512');
-        console.log(start, 'password encrypted 1');
-    crypto.pbkdf2Sync('password', 'salt', 100000, 1024, 'sha512')
-        console.log(Date.now(), 'password encrypted 2');
-    crypto.pbkdf2Sync('password', 'salt', 100000, 1024, 'sha512')
-        console.log(Date.now(), 'password encrypted 3');
+    console.log(Date.now() - start, "password encypted 1");
+
     crypto.pbkdf2('password', 'salt', 100000, 1024, 'sha512', ()=>{
-        console.log(Date.now(), 'password encrypted 4');
+        console.log(Date.now() - start,"password encypted 2");
     })
+
     crypto.pbkdf2('password', 'salt', 100000, 1024, 'sha512', ()=>{
-        console.log(Date.now(), 'password encrypted 5');
+        console.log(Date.now() - start,"password encypted 3");
+    })
+
+    crypto.pbkdf2('password', 'salt', 100000, 1024, 'sha512', ()=>{
+        console.log(Date.now() - start,"password encypted 4");
     })
 })
 
-console.log("From the top-level code");
+console.log("Outside the callback");
